@@ -483,6 +483,15 @@ class EavMetadataImport
 
     private function createAttributeGroup($attributeSetId, $info): int
     {
+        //prevent duplicate keys mysql errors
+        $attributeSetIdFromAlreadyMigratedData = $this->sql->prepareStatementForSqlObject($this->sql->select('eav_attribute_group')->where([
+            'attribute_set_id' => $attributeSetId, 'attribute_group_code' => $info['attribute_group_code']
+        ]))->execute()->current();
+
+        if (!empty($attributeSetIdFromAlreadyMigratedData)) {
+            return (int)$attributeSetIdFromAlreadyMigratedData['attribute_group_id'];
+        }
+
         return (int)$this->sql
             ->prepareStatementForSqlObject(
                 $this->sql->insert('eav_attribute_group')

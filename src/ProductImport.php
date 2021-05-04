@@ -139,12 +139,16 @@ class ProductImport
                 )->withResolver($productResolver)->onDuplicate(['value']);
             }
 
-
             foreach ($productData as $row) {
                 $type = $attributes[$row['attribute']]['type'] ?? '';
 
-                if (!isset($typeInserts[$type])) {
+                if (!isset($typeInserts[$type]) || (isset($row['value']) && empty($row['value']))) {
                     continue;
+                }
+
+                //Prevent to long values
+                if ($type === 'varchar' && strlen($row['value']) >= 255) {
+                    $row['value'] = substr($row['value'], 0, 255);
                 }
 
                 $attributeOptions = $options[$row['attribute']] ?? [];
