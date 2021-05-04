@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../../autoload.php';
 
 $factory = new \EcomDev\MagentoMigration\CsvFactory(getcwd());
 $writer = $factory->createWriter('product_data_another.csv', ['sku', 'attribute', 'store', 'value']);
